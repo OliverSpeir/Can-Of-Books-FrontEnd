@@ -33,13 +33,13 @@ class BestBooks extends React.Component {
     this.getBooks();
   }
 
-  handleOpenModal() {
+  handleOpenModal = () => {
     this.setState({
       isModalShown: true
     });
   }
 
-  handleCloseModal() {
+  handleCloseModal = () => {
     this.setState({
       isModalShown: false
     })
@@ -86,7 +86,7 @@ class BestBooks extends React.Component {
           </Carousel>
         ) : (<h3>No Books Found :(</h3>)
         }
-        <BookButton handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} show={this.state.isModalShown}/>
+        <BookButton handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} show={this.state.isModalShown} handleBookSubmit={this.handleBookSubmit}/>
       </>
     )
   }

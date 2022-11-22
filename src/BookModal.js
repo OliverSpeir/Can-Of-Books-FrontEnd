@@ -1,16 +1,15 @@
 import React from 'react';
 import {Modal, Form} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 
 
-class BookButton extends React.Component {
-
-
+class BookModal extends React.Component {
   render() {
     return (
       <>
         <Modal
           show={this.props.show}
-          onHide={this.props.handleCloseModal}
+          onHide={this.props.onHide}
         >
           <Form onSubmit={this.props.handleBookSubmit}>
               <Form.Group controlId="title">
@@ -26,7 +25,7 @@ class BookButton extends React.Component {
               </Form.Group>
               <Button type="submit">Add Book</Button>
             </Form>
-          <Button onClick={this.props.handleCloseModal} >Close</Button>
+          <Button onClick={this.props.onHide} >Close</Button>
         </Modal>
       </>
     )
@@ -38,4 +37,4 @@ class BookButton extends React.Component {
 }
 
 
-export default BookButton;
+export default BookModal;
