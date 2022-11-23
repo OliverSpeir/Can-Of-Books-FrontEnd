@@ -1,6 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
+import BookButton from './AddBookButton';
+import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
 let SERVER = process.env.REACT_APP_SERVER;
 
 
@@ -9,7 +12,8 @@ class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      isModalShown: false
     }
   }
 
@@ -31,23 +35,82 @@ class BestBooks extends React.Component {
     this.getBooks();
   }
 
+  handleOpenModal = () => {
+    this.setState({
+      isModalShown: true
+    });
+  }
+
+  handleCloseModal = () => {
+    this.setState({
+      isModalShown: false
+    })
+  }
+
+  handleBookSubmit = (e) => {
+    e.preventDefault();
+    let newBook = {
+      title: e.target.title.value,
+      description: e.target.description.value,
+      status: e.target.status.checked,
+      img: e.target.cover.value
+    }
+    this.postBook(newBook);
+  }
+
+  deleteBook = async (id) => {
+    // ex URL:
+    // http://localhost:3001/cats/637bceabc57c693faee21e8f
+    try {
+      let url = `${SERVER}/books/${id}`;
+      // do not assume that axios.delete() will return a value
+      await axios.delete(url);
+      // // this is ok for today's lab
+      // this.getCats();
+      let updatedBooks = this.state.books.filter(book => book._id !== id);
+      this.setState({
+        books: updatedBooks
+      })
+    } catch (err) {
+      console.log('We have an error: ', err.response.data);
+    }
+  }
+
+  postBook = async (aBook) => {
+    try {
+      // make the request to add a cat to my server
+      // axios.post will return the cat that was added to the database with the ID and version number
+      // axios.post takes in 2 parameters: the URL endpoint, and the thing we want added:
+      let bookThatWasAdded = await axios.post(`${SERVER}/books`, aBook);
+      console.log(bookThatWasAdded);
+      this.setState({
+        books: [...this.state.books, bookThatWasAdded.data]
+      });
+    } catch (err) {
+      console.log('We have an error: ', err.response.data);
+    }
+  }
+
   render() {
-    let carouselItems = this.state.books.map ((x,idx)=> (
-      <Carousel.Item key ={idx}>
-          <h3> Title : {x.title} Description: {x.description} </h3>
+    let carouselItems = this.state.books.map((x, idx) => (
+      <Carousel.Item key={idx}>
+        <Image fluid={true} src={`${x.img}`} alt={x.description}/>
+        <h3> Title : {x.title} Description: {x.description} </h3>
+        <Button className="deleteButton" onClick={()=>this.deleteBook(x._id)}>Delete Book</Button>
       </Carousel.Item>
     ))
     return (
       <>
-        <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
+        <h2>Virtual Bookshelf</h2>
 
-        {this.state.books.length ?( 
-          <Carousel> 
+        {this.state.books.length ? (
+          <Carousel>
             {carouselItems}
           </Carousel>
         ) : (<h3>No Books Found :(</h3>)
-  }
-  </>
+        }
+        <BookButton handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} show={this.state.isModalShown} handleBookSubmit={this.handleBookSubmit}/>
+      </>
     )
   }
 }
