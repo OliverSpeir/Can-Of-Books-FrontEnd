@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import BookButton from './AddBookButton';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
+import EditBookModal from './EditBookModal';
 let SERVER = process.env.REACT_APP_SERVER;
 
 
@@ -13,7 +14,8 @@ class BestBooks extends React.Component {
     super(props);
     this.state = {
       books: [],
-      isModalShown: false
+      isModalShown: false,
+      isEditModalShown: false
     }
   }
 
@@ -46,6 +48,17 @@ class BestBooks extends React.Component {
       isModalShown: false
     })
   }
+  handleOpenEditModal = () => {
+    this.setState({
+      isEditModalShown: true
+    });
+  }
+
+  handleCloseEditModal = () => {
+    this.setState({
+      isEditModalShown: false
+    })
+  }
 
   handleBookSubmit = (e) => {
     e.preventDefault();
@@ -75,6 +88,24 @@ class BestBooks extends React.Component {
       console.log('We have an error: ', err.response.data);
     }
   }
+  updatedBook = async (bookToUpdate) => {
+    try {
+      console.log(bookToUpdate);
+      let url = `${SERVER}/books/${bookToUpdate._id}`;
+      let updatedBookObj = await axios.put(url, bookToUpdate);
+      
+      let updateBooksArray = this.state.books.map(x => {
+        return x._id === bookToUpdate._id
+          ? updatedBookObj.data
+          : x;
+      });
+      this.setState({
+        books: updateBooksArray
+      });
+    } catch (err) {
+      console.log('We have an error: ', err.response.data);
+    }
+  }
 
   postBook = async (aBook) => {
     try {
@@ -95,10 +126,14 @@ class BestBooks extends React.Component {
     let carouselItems = this.state.books.map((x, idx) => (
       <Carousel.Item key={idx}>
         <Image fluid={true} src={`${x.img}`} alt={x.description}/>
-        <h3> Title : {x.title} Description: {x.description} </h3>
+        <Carousel.Caption>  Title : {x.title} Description: {x.description} </Carousel.Caption>
         <Button className="deleteButton" onClick={()=>this.deleteBook(x._id)}>Delete Book</Button>
+        <Button className="editBook" onClick={this.handleOpenEditModal}>Edit Book</Button>
+        <EditBookModal onHide={this.handleCloseEditModal} show={this.state.isEditModalShown} updatedBook={this.updatedBook} books = {x}
+        />
       </Carousel.Item>
     ))
+    console.log(this.state.books);
     return (
       <>
         <h2>Virtual Bookshelf</h2>
