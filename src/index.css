@@ -1,0 +1,44 @@
+body {
+  text-align: center;
+  max-height: 90vh;
+}
+
+button{
+  /* margin-top: 50px; */
+}
+
+
+div{
+  /* margin-bottom: 20px; */
+}
+
+.deleteButton{
+  /* margin-top: 20px; */
+}
+
+
+
+
+.carousel{
+  min-height: 65vh;
+}
+
+
+
+nav {
+  margin: auto;
+  text-align: center;
+}
+.nav-item{
+  margin: 10px 15px;
+}
+
+header{
+  margin-bottom: 15px;
+}
+
+h2{
+  background-color: #212529;
+  color: rgb(235, 230, 230);
+  padding: 30px;
+}

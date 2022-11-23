@@ -14,21 +14,21 @@ class App extends React.Component {
   render() {
     return (
       <>
-        <Router>
-          <Header />
-          <Routes>
-            <Route 
-              exact path="/"
-              element={<BestBooks />}
-            >
+          <Router>
+            <Header />
+            <Routes>
+              <Route
+                exact path="/"
+                element={<BestBooks />}
+              >
               </Route>
-            <Route 
-              exact path ="/about"
-              element={<About/>}>
-            </Route>
-          </Routes>
-          <Footer />
-        </Router>
+              <Route
+                exact path="/about"
+                element={<About />}>
+              </Route>
+            </Routes>
+        <Footer />
+      </Router>
       </>
     )
   }

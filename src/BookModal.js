@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Form} from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 
 
@@ -12,19 +12,23 @@ class BookModal extends React.Component {
           onHide={this.props.onHide}
         >
           <Form onSubmit={this.props.handleBookSubmit}>
-              <Form.Group controlId="title">
-                <Form.Label>Title</Form.Label>
-                <Form.Control type="text" />
-              </Form.Group>
-              <Form.Group controlId="description">
-                <Form.Label>Description</Form.Label>
-                <Form.Control type="text" />
-              </Form.Group>
-              <Form.Group controlId="status">
-                <Form.Check type="checkbox" label="status" />
-              </Form.Group>
-              <Button type="submit">Add Book</Button>
-            </Form>
+            <Form.Group controlId='cover'>
+              <Form.Label>Cover</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            <Form.Group controlId="title">
+              <Form.Label>Title</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            <Form.Group controlId="description">
+              <Form.Label>Description</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            <Form.Group controlId="status">
+              <Form.Check type="checkbox" label="status" />
+            </Form.Group>
+            <Button type="submit" onClick={this.props.onHide}>Add Book</Button>
+          </Form>
           <Button onClick={this.props.onHide} >Close</Button>
         </Modal>
       </>
