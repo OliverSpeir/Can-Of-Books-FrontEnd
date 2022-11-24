@@ -3,7 +3,6 @@ import axios from 'axios';
 import Carousel from 'react-bootstrap/Carousel';
 import BookButton from './AddBookButton';
 import Button from 'react-bootstrap/Button';
-import Image from 'react-bootstrap/Image';
 import EditBookModal from './EditBookModal';
 let SERVER = process.env.REACT_APP_SERVER;
 
@@ -93,7 +92,7 @@ class BestBooks extends React.Component {
       console.log(bookToUpdate);
       let url = `${SERVER}/books/${bookToUpdate._id}`;
       let updatedBookObj = await axios.put(url, bookToUpdate);
-      
+
       let updateBooksArray = this.state.books.map(x => {
         return x._id === bookToUpdate._id
           ? updatedBookObj.data
@@ -125,11 +124,9 @@ class BestBooks extends React.Component {
   render() {
     let carouselItems = this.state.books.map((x, idx) => (
       <Carousel.Item key={idx}>
-        <Image fluid={true} src={`${x.img}`} alt={x.description}/>
-        <Carousel.Caption>  Title : {x.title} Description: {x.description} </Carousel.Caption>
-        <Button className="deleteButton" onClick={()=>this.deleteBook(x._id)}>Delete Book</Button>
-        <Button className="editBook" onClick={this.handleOpenEditModal}>Edit Book</Button>
-        <EditBookModal onHide={this.handleCloseEditModal} show={this.state.isEditModalShown} updatedBook={this.updatedBook} books = {x}
+        <img src={`${x.img}`} alt={x.description} />
+        <Carousel.Caption className="carouselTitle"><p>  Title : {x.title} Description: {x.description} </p> <Button className="editBook" onClick={this.handleOpenEditModal}>Edit Book</Button>  <Button className="deleteButton" onClick={() => this.deleteBook(x._id)}>Delete Book</Button></Carousel.Caption>
+        <EditBookModal onHide={this.handleCloseEditModal} show={this.state.isEditModalShown} updatedBook={this.updatedBook} books={x}
         />
       </Carousel.Item>
     ))
@@ -144,7 +141,7 @@ class BestBooks extends React.Component {
           </Carousel>
         ) : (<h3>No Books Found :(</h3>)
         }
-        <BookButton handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} show={this.state.isModalShown} handleBookSubmit={this.handleBookSubmit}/>
+        <BookButton handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} show={this.state.isModalShown} handleBookSubmit={this.handleBookSubmit} />
       </>
     )
   }
