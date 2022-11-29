@@ -4,8 +4,10 @@ import Carousel from 'react-bootstrap/Carousel';
 import BookButton from './AddBookButton';
 import Button from 'react-bootstrap/Button';
 import EditBookModal from './EditBookModal';
+import { withAuth0 } from '@auth0/auth0-react';
 let SERVER = process.env.REACT_APP_SERVER;
-
+// const res = await this.props.auth0.getIdTokenClaims();
+// const jwt = res.__raw;
 
 
 class BestBooks extends React.Component {
@@ -19,8 +21,20 @@ class BestBooks extends React.Component {
   }
 
   getBooks = async () => {
+    if (this.props.auth0.isAuthenticated) {
+      const res = await this.props.auth0.getIdTokenClaims();
+      const jwt = res.__raw;
+      let config = {
+        method: 'get',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: '/books',
+        headers: {
+          "Authorization": `Bearer ${jwt}`
+        }
+      }
     try {
-      let results = await axios.get(`${SERVER}/books`);
+      let results = await axios(config);
+      // let results = await axios.get(`${SERVER}/books`);
       this.setState({
         books: results.data
       });
@@ -28,6 +42,7 @@ class BestBooks extends React.Component {
       console.log('we have an error: ', error.response.data);
     }
   }
+}
 
 
   // method that will get called when the components loads (has all it needs)
@@ -71,12 +86,23 @@ class BestBooks extends React.Component {
   }
 
   deleteBook = async (id) => {
-    // ex URL:
-    // http://localhost:3001/cats/637bceabc57c693faee21e8f
+    if (this.props.auth0.isAuthenticated) {
+      const res = await this.props.auth0.getIdTokenClaims();
+      const jwt = res.__raw;
+      let config = {
+        method: 'delete',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: `/books/${id}`,
+        headers: {
+          "Authorization": `Bearer ${jwt}`
+        },
+        data:id
+      }
     try {
-      let url = `${SERVER}/books/${id}`;
+      // let url = `${SERVER}/books/${id}`;
       // do not assume that axios.delete() will return a value
-      await axios.delete(url);
+      // await axios.delete(url);
+      await axios(config);
       // // this is ok for today's lab
       // this.getCats();
       let updatedBooks = this.state.books.filter(book => book._id !== id);
@@ -87,11 +113,27 @@ class BestBooks extends React.Component {
       console.log('We have an error: ', err.response.data);
     }
   }
+}
   updatedBook = async (bookToUpdate) => {
+    if (this.props.auth0.isAuthenticated) {
+      const res = await this.props.auth0.getIdTokenClaims();
+      const jwt = res.__raw;
+      let config = {
+        method: 'put',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: `/books/${bookToUpdate._id}`,
+        headers: {
+          "Authorization": `Bearer ${jwt}`
+        },
+        data:bookToUpdate
+      }
+
+
     try {
-      console.log(bookToUpdate);
-      let url = `${SERVER}/books/${bookToUpdate._id}`;
-      let updatedBookObj = await axios.put(url, bookToUpdate);
+      // console.log(bookToUpdate);
+      // let url = `${SERVER}/books/${bookToUpdate._id}`;
+      // let updatedBookObj = await axios.put(url, bookToUpdate);
+      let updatedBookObj = await axios(config);
 
       let updateBooksArray = this.state.books.map(x => {
         return x._id === bookToUpdate._id
@@ -105,20 +147,31 @@ class BestBooks extends React.Component {
       console.log('We have an error: ', err.response.data);
     }
   }
+}
 
   postBook = async (aBook) => {
+    if (this.props.auth0.isAuthenticated) {
+    const res = await this.props.auth0.getIdTokenClaims();
+    const jwt = res.__raw;
+    let config = {
+      method: 'post',
+      baseURL: process.env.REACT_APP_SERVER,
+      url: '/books',
+      headers: {
+        "Authorization": `Bearer ${jwt}`
+      },
+      data:aBook
+    }
     try {
-      // make the request to add a cat to my server
-      // axios.post will return the cat that was added to the database with the ID and version number
-      // axios.post takes in 2 parameters: the URL endpoint, and the thing we want added:
-      let bookThatWasAdded = await axios.post(`${SERVER}/books`, aBook);
-      console.log(bookThatWasAdded);
+      let bookThatWasAdded = await axios(config);
+      // let bookThatWasAdded = await axios.post(`${SERVER}/books`, aBook);
       this.setState({
         books: [...this.state.books, bookThatWasAdded.data]
       });
     } catch (err) {
       console.log('We have an error: ', err.response.data);
     }
+  }
   }
 
   render() {
@@ -130,7 +183,6 @@ class BestBooks extends React.Component {
         />
       </Carousel.Item>
     ))
-    console.log(this.state.books);
     return (
       <>
         <h2>Virtual Bookshelf</h2>
@@ -147,13 +199,5 @@ class BestBooks extends React.Component {
   }
 }
 
-export default BestBooks;
+export default withAuth0(BestBooks);
 
-
-
-// {this.state.books.map ((x,idx) => (
-//   <>
-//   {console.log(x) }
-//   <Carousel.Item key= {idx}>
-//     <h1> as;dkfjaskldfj</h1>
-//   </Carousel.Item>
