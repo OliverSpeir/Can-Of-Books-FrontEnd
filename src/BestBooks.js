@@ -5,7 +5,6 @@ import BookButton from './AddBookButton';
 import Button from 'react-bootstrap/Button';
 import EditBookModal from './EditBookModal';
 import { withAuth0 } from '@auth0/auth0-react';
-let SERVER = process.env.REACT_APP_SERVER;
 // const res = await this.props.auth0.getIdTokenClaims();
 // const jwt = res.__raw;
 
